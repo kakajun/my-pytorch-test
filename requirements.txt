@@ -2,3 +2,5 @@ torch==2.9.1
 numpy==2.4.1
 matplotlib==3.10.8
 torchvision==0.24.1
+pandas==2.3.3
+jieba==0.42.1
