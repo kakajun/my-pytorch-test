@@ -13,7 +13,7 @@ transform = transforms.Compose([
 # 获取当前脚本所在的目录，构建绝对路径
 # 这样无论你在哪里运行脚本，都能找到同级目录下的图片
 current_dir = os.path.dirname(os.path.abspath(__file__))
-image_path = os.path.join(current_dir, 'image.jpg')
+image_path = os.path.join(current_dir, 'image.png')
 
 # 加载图像
 image = Image.open(image_path)

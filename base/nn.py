@@ -2,13 +2,19 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 
+# --- 0. 固定随机种子 (解决每次结果不一样的问题) ---
+# 只要种子一样，每次运行生成的随机数（初始权重）就一样
+torch.manual_seed(42)
+
 # 1. 定义一个简单的全连接神经网络
 class SimpleNN(nn.Module):
     def __init__(self):
         super(SimpleNN, self).__init__()
-        # 简单两层：2 -> 2 -> 1
-        self.fc1 = nn.Linear(2, 2)
-        self.fc2 = nn.Linear(2, 1)
+        # 简单两层：2 -> 10 -> 1 (增加隐藏层神经元)
+        # 增加神经元数量确实会增加计算量，但在这种微型任务上，时间差异肉眼不可见
+        # 但它能极大提高模型的稳定性，避免“死神经元”问题
+        self.fc1 = nn.Linear(2, 10)
+        self.fc2 = nn.Linear(10, 1)
 
     def forward(self, x):
         x = torch.relu(self.fc1(x))  # 激活函数，增加非线性
