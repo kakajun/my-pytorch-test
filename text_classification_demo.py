@@ -1,3 +1,39 @@
+"""
+========================================================================================
+项目名称: 中文情感分类 Demo (Chinese Sentiment Analysis)
+核心架构: Bi-directional LSTM (双向 LSTM)
+========================================================================================
+
+【架构详解】
+这个模型是一个经典的文本分类架构，主要由以下几部分组成：
+
+1. **输入层 (Input & Embedding)**
+   - **预处理**: 使用 `jieba` 对中文句子进行分词。
+   - **Embedding层**: 将每个词索引映射为一个固定维度的稠密向量 (Vector)。
+     这能捕捉词与词之间的语义关系（例如“开心”和“高兴”在向量空间中距离很近）。
+
+2. **编码层 (Encoder - BiLSTM)**
+   - 使用 **双向 LSTM (Bi-directional LSTM)**。
+   - **为什么用双向?**
+     - 正向 LSTM 捕获上文信息 (Past context)。
+     - 反向 LSTM 捕获下文信息 (Future context)。
+     - 比如在理解 "不" 字时，需要知道后面跟着的是 "好" (不好) 还是 "去" (不去)，双向结构能更好地捕捉这种依赖。
+   - **输出**: 最终提取两个方向的**最后一个隐状态 (Hidden State)** 进行拼接。
+     - Tensor 形状变化: [Batch, Seq_Len, Emb_Dim] -> [Batch, Hidden_Dim * 2]
+
+3. **输出层 (Classifier)**
+   - 一个全连接层 (Linear Layer)。
+   - 输入: BiLSTM 输出的拼接向量 (维度 = Hidden_Dim * 2)。
+   - 输出: 1个数值 (Logits)。
+   - 最终通过 Sigmoid 函数将其转换为 0~1 之间的概率值 (情感得分)。
+
+【技术亮点】
+- **Pack Padded Sequence**:
+  处理变长句子时，通过 `pack_padded_sequence` 告诉 LSTM 真实长度，
+  避免 LSTM 计算无意义的 Padding (填充0) 部分，既提高效率又保证精度。
+- **Dropout**: 在 Embedding 和 LSTM 层后加入 Dropout，随机丢弃部分神经元，防止过拟合。
+========================================================================================
+"""
 import random
 import time
 import pandas as pd

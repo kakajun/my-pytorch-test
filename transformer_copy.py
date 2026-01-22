@@ -1,3 +1,46 @@
+"""
+========================================================================================
+项目名称: Transformer 核心架构实现 (The Transformer)
+论文来源: "Attention Is All You Need" (Google, 2017)
+任务演示: 序列复制任务 (Sequence Copy Task)
+========================================================================================
+
+【架构详解】
+Transformer 是现代 NLP (如 BERT, GPT) 的基石，它完全抛弃了 RNN/LSTM 的循环结构，
+完全依赖 **Self-Attention (自注意力机制)** 来捕捉序列中的长距离依赖。
+
+主要由以下组件构成：
+
+1. **编码器 (Encoder)**
+   - 由 N 个 EncoderLayer 堆叠而成。
+   - 每个层包含两个子层：
+     a. **Multi-Head Self-Attention**: 让模型关注句子中不同位置的信息（捕捉上下文）。
+     b. **Position-wise Feed-Forward**: 全连接前馈网络，用于特征变换。
+   - 包含 **Residual Connection (残差连接)** 和 **Layer Normalization (层归一化)**。
+
+2. **解码器 (Decoder)**
+   - 由 N 个 DecoderLayer 堆叠而成。
+   - 每个层包含三个子层：
+     a. **Masked Multi-Head Self-Attention**:
+        带掩码的自注意力，确保预测第 i 个词时只能看到 i 之前的词（防止偷看未来）。
+     b. **Multi-Head Cross-Attention**:
+        交叉注意力，Query 来自解码器，Key/Value 来自编码器（用于对齐源语言和目标语言）。
+     c. **Position-wise Feed-Forward**.
+
+3. **关键技术点**
+   - **Positional Encoding (位置编码)**:
+     因为 Transformer 没有循环结构，无法识别顺序，必须手动注入位置信息（正弦/余弦函数）。
+   - **Scaled Dot-Product Attention**:
+     注意力核心公式: Attention(Q, K, V) = softmax(QK^T / sqrt(d_k))V
+   - **Parallelism**:
+     相比 RNN，Transformer 可以并行计算整个序列，训练速度极大提升。
+
+【当前代码演示】
+实现了一个完整的 Transformer 模型，并训练它完成一个简单的“数字序列复制”任务。
+输入: [1, 5, 2, 8] -> 输出: [1, 5, 2, 8]
+这证明了模型具备捕捉序列模式并生成对应输出的能力。
+========================================================================================
+"""
 import torch
 import torch.nn as nn
 import torch.optim as optim
